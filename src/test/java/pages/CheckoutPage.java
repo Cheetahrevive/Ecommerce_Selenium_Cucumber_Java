@@ -85,3 +85,6 @@ public class CheckoutPage extends BasePage {
                 case "overnight":
                     click(overnightShipping);
                     break;
+        }
+    }
+}
