@@ -76,70 +76,12 @@ public class CheckoutPage extends BasePage {
      */
     public void selectShippingMethod(String method) {
         switch (method.toLowerCase()) {
-            case "standard" -> click(standardShipping);
-            case "express" -> click(expressShipping);
-            case "overnight" -> click(overnightShipping);
-        }
-    }
-    
-    /**
-     * Enter payment information
-     * @param cardNumber Card number
-     * @param cardHolderName Card holder name
-     * @param expiryDate Expiry date
-     * @param cvv CVV
-     */
-    public void enterPaymentInformation(String cardNumber, String cardHolderName, 
-                                        String expiryDate, String cvv) {
-        typeText(cardNumberInput, cardNumber);
-        typeText(cardHolderNameInput, cardHolderName);
-        typeText(expiryDateInput, expiryDate);
-        typeText(cvvInput, cvv);
-    }
-    
-    /**
-     * Place order
-     */
-    public void placeOrder() {
-        click(placeOrderBtn);
-    }
-    
-    /**
-     * Continue to payment
-     */
-    public void continueToPayment() {
-        click(continueToPaymentBtn);
-    }
-    
-    /**
-     * Get order confirmation message
-     * @return Confirmation message
-     */
-    public String getOrderConfirmationMessage() {
-        return getText(orderConfirmationMessage);
-    }
-    
-    /**
-     * Get order number
-     * @return Order number
-     */
-    public String getOrderNumber() {
-        return getText(orderNumberText);
-    }
-    
-    /**
-     * Get order total
-     * @return Order total
-     */
-    public String getOrderTotal() {
-        return getText(orderTotal);
-    }
-    
-    /**
-     * Verify checkout page is displayed
-     * @return true if checkout page is displayed
-     */
-    public boolean isCheckoutPageDisplayed() {
-        return isElementDisplayed(placeOrderBtn) || isElementDisplayed(continueToPaymentBtn);
-    }
-}
+       case "standard":
+                    click(standardShipping);
+                    break;
+                case "express":
+                    click(expressShipping);
+                    break;
+                case "overnight":
+                    click(overnightShipping);
+                    break;
