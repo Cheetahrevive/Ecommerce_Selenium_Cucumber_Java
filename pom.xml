@@ -103,6 +103,21 @@
             <artifactId>commons-io</artifactId>
             <version>2.15.1</version>
         </dependency>
+
+                 <!-- JavaFaker for test data generation -->
+                 <dependency>
+                                <groupId>com.github.javafaker</groupId>
+                                <artifactId>javafaker</artifactId>
+                                <version>1.0.2</version>
+                              </dependency>
+
+                 <!-- JUnit for assertions -->
+                 <dependency>
+                                <groupId>org.junit.jupiter</groupId>
+                                <artifactId>junit-jupiter</artifactId>
+                                <version>5.10.1</version>
+                                <scope>test</scope>
+                              </dependency>
     </dependencies>
 
     <build>
