@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="E-Commerce Automation Test Suite" verbose="1" parallel="tests" thread-count="3">
+    
+    <listeners>
+        <listener class-name="com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter"/>
+    </listeners>
+    
+    <!-- Smoke Test Suite -->
+    <test name="Smoke Tests - Chrome" parallel="false">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="com.ecommerce.runners.TestRunner">
+                <methods>
+                    <include name="runCucumberTests"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    
+    <!-- Regression Test Suite -->
+    <test name="Regression Tests - Chrome" parallel="false">
+        <parameter name="browser" value="chrome"/>
+        <parameter name="tags" value="@regression"/>
+        <classes>
+            <class name="com.ecommerce.runners.TestRunner"/>
+        </classes>
+    </test>
+    
+    <!-- E2E Test Suite -->
+    <test name="E2E Tests - Chrome" parallel="false">
+        <parameter name="browser" value="chrome"/>
+        <parameter name="tags" value="@e2e"/>
+        <classes>
+            <class name="com.ecommerce.runners.TestRunner"/>
+        </classes>
+    </test>
+    
+    <!-- Cross-Browser Testing -->
+    <test name="Cross Browser - Firefox" parallel="false">
+        <parameter name="browser" value="firefox"/>
+        <parameter name="tags" value="@smoke"/>
+        <classes>
+            <class name="com.ecommerce.runners.TestRunner"/>
+        </classes>
+    </test>
+    
+    <test name="Cross Browser - Edge" parallel="false">
+        <parameter name="browser" value="edge"/>
+        <parameter name="tags" value="@smoke"/>
+        <classes>
+            <class name="com.ecommerce.runners.TestRunner"/>
+        </classes>
+    </test>
+
+</suite>
