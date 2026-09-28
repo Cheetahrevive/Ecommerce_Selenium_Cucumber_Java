@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * CartPage class representing shopping cart page
@@ -41,7 +42,7 @@ public class CartPage extends BasePage {
     public List<String> getCartItemTitles() {
         return getElements(cartItemTitle).stream()
                 .map(WebElement::getText)
-                .toList();
+                .collect(Collectors.toList());
     }
     
     /**
