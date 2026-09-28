@@ -5,11 +5,13 @@ import io.cucumber.testng.CucumberOptions;
 import org.testng.annotations.DataProvider;
 
 /**
- * TestNG runner for the CI-gated suite: the SauceDemo login feature.
- * Other features target demo flows not covered by CI and are excluded here.
+ * TestNG runner for the CI-gated suite: the SauceDemo login and shopping
+ * cart features. Other features target demo flows not covered by CI and
+ * are excluded here.
  */
 @CucumberOptions(
-        features = "src/test/resources/features/Login.feature",
+        features = {"src/test/resources/features/Login.feature",
+                    "src/test/resources/features/ShoppingCart.feature"},
         glue = {"stepDefinitions", "hooks"},
         plugin = {
                 "pretty",
