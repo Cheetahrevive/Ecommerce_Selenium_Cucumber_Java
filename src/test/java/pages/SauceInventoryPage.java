@@ -2,6 +2,7 @@ package pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -50,11 +51,16 @@ public class SauceInventoryPage extends BasePage {
         driver.navigate().back();
     }
 
-    /** Add a product to the cart from the inventory page. Returns its displayed price. */
+    /**
+     * Add a product to the cart from the inventory page. Returns its displayed price.
+     * Waits for the button to be clickable first: clicking while React is still
+     * rendering can silently do nothing, leaving the cart badge absent.
+     */
     public BigDecimal addProductToCart(String productName) {
         WebElement item = findItemByName(inventoryItems, productName);
         BigDecimal price = parsePrice(item.findElement(inventoryItemPrice).getText());
-        item.findElement(By.tagName("button")).click();
+        WebElement button = item.findElement(By.tagName("button"));
+        wait.until(ExpectedConditions.elementToBeClickable(button)).click();
         return price;
     }
 
@@ -111,7 +117,8 @@ public class SauceInventoryPage extends BasePage {
 
     public void removeProductFromCart(String productName) {
         WebElement item = findItemByName(cartItems, productName);
-        item.findElement(By.tagName("button")).click();
+        WebElement button = item.findElement(By.tagName("button"));
+        wait.until(ExpectedConditions.elementToBeClickable(button)).click();
     }
 
     public void removeAllItemsFromCart() {
