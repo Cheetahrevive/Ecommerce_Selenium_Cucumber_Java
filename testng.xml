@@ -2,9 +2,9 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="E-Commerce Automation Test Suite" verbose="1" parallel="tests" thread-count="3">
 
-    <listeners>
-        <listener class-name="com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter"/>
-    </listeners>
+    <!-- NOTE: ExtentCucumberAdapter is registered as a Cucumber plugin in the
+         TestRunner @CucumberOptions, not as a TestNG listener (it has no
+         TestNG-compatible constructor, which aborts the suite with 0 tests). -->
 
     <!-- SauceDemo login suite - the CI-gated feature set (Chrome, headless in CI) -->
     <test name="Login Tests - Chrome">
