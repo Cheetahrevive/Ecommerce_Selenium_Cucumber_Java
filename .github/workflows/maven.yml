@@ -1,6 +1,8 @@
 name: CI/CD Pipeline
 
 on:
+  push:
+    branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
   workflow_dispatch:
@@ -34,7 +36,9 @@ jobs:
     
     - name: Generate Test Report
       if: always()
-      run: mvn surefire-report:report
+      # report-only: generate from existing results without re-running tests
+      # (plain `report` forks a second test run, without the CI flags)
+      run: mvn surefire-report:report-only
     
     - name: Upload Test Results
       if: always()
@@ -57,5 +61,7 @@ jobs:
       uses: dorny/test-reporter@v1
       with:
         name: Test Results (${{ matrix.browser }})
-        path: target/surefire-reports/*.xml
+        # TEST-*.xml only: testng-failed.xml is TestNG format, not JUnit,
+        # and makes the reporter fail to parse the results
+        path: target/surefire-reports/TEST-*.xml
         reporter: java-junit
