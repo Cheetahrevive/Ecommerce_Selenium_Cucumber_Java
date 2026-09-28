@@ -1,11 +1,6 @@
 package pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
 
 /**
  * Page object for the SauceDemo login page (https://www.saucedemo.com).
@@ -62,31 +57,17 @@ public class SauceLoginPage extends BasePage {
         return getAttribute(passwordField, "type");
     }
 
-    public void openMenu() {
-        click(menuButton);
-        if (!isMenuOpen()) {
-            // Retry once: the first click can be swallowed while the
-            // inventory page is still settling after login.
-            click(menuButton);
-        }
-    }
-
     /**
-     * The burger menu is open when its links (e.g. Logout) are visible.
-     * Uses a short wait so a closed menu fails fast instead of blocking
-     * on the page-object's default 30s wait.
+     * Open the burger menu. Uses a JavaScript click: in headless Chrome the
+     * regular WebDriver click on this toggle is unreliable (the menu never
+     * opens), while the app's handler fires fine on a dispatched click event.
      */
-    public boolean isMenuOpen() {
-        try {
-            new WebDriverWait(driver, Duration.ofSeconds(5))
-                    .until(ExpectedConditions.visibilityOfElementLocated(logoutLink));
-            return true;
-        } catch (TimeoutException e) {
-            return false;
-        }
+    public void openMenu() {
+        clickWithJS(menuButton);
     }
 
     public void clickLogout() {
-        click(logoutLink);
+        waitForElementToBeVisible(logoutLink);
+        clickWithJS(logoutLink);
     }
 }
