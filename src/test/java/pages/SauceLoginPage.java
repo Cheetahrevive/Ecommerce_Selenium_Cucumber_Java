@@ -1,6 +1,8 @@
 package pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 /**
  * Page object for the SauceDemo login page (https://www.saucedemo.com).
@@ -49,8 +51,18 @@ public class SauceLoginPage extends BasePage {
         return getText(errorMessage);
     }
 
+    /**
+     * Waits for the post-login redirect instead of reading the URL immediately:
+     * SauceDemo's login response time varies, and an immediate read raced it,
+     * flaking the cart scenarios' Background login step.
+     */
     public boolean isLoggedIn() {
-        return getCurrentUrl().contains("inventory.html");
+        try {
+            wait.until(ExpectedConditions.urlContains("inventory.html"));
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
     }
 
     public String getPasswordFieldType() {
