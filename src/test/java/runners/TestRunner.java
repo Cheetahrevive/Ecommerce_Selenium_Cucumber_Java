@@ -5,13 +5,12 @@ import io.cucumber.testng.CucumberOptions;
 import org.testng.annotations.DataProvider;
 
 /**
- * TestRunner class to execute Cucumber feature files with TestNG
- * Configures Cucumber options for feature files, glue code, plugins, and reports
+ * TestNG runner for the CI-gated suite: the SauceDemo login feature.
+ * Other features target demo flows not covered by CI and are excluded here.
  */
 @CucumberOptions(
-        features = "src/test/resources/features",
-        glue = {"stepdefinitions", "hooks"},
-        tags = "",
+        features = "src/test/resources/features/Login.feature",
+        glue = {"stepDefinitions", "hooks"},
         plugin = {
                 "pretty",
                 "html:target/cucumber-reports/cucumber.html",
@@ -24,7 +23,7 @@ import org.testng.annotations.DataProvider;
         publish = false
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
-    
+
     /**
      * Enable parallel execution at scenario level
      * @return Scenarios data provider

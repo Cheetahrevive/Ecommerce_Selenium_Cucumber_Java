@@ -36,14 +36,24 @@ public class DriverManager {
      */
     public static void initializeDriver(String browserType) {
         WebDriver webDriver = null;
-        
+
+        // CI passes -Dheadless=true; a headed Chrome cannot start on a headless runner.
+        boolean headless = Boolean.parseBoolean(System.getProperty("headless", "false"));
+
         switch (browserType.toLowerCase()) {
             case "chrome":
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
-                chromeOptions.addArguments("--start-maximized");
                 chromeOptions.addArguments("--disable-notifications");
                 chromeOptions.addArguments("--disable-popup-blocking");
+                if (headless) {
+                    chromeOptions.addArguments("--headless=new");
+                    chromeOptions.addArguments("--no-sandbox");
+                    chromeOptions.addArguments("--disable-dev-shm-usage");
+                    chromeOptions.addArguments("--window-size=1920,1080");
+                } else {
+                    chromeOptions.addArguments("--start-maximized");
+                }
                 webDriver = new ChromeDriver(chromeOptions);
                 break;
                 
@@ -78,8 +88,10 @@ public class DriverManager {
         
         webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         webDriver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-        webDriver.manage().window().maximize();
-        
+        if (!headless) {
+            webDriver.manage().window().maximize();
+        }
+
         driver.set(webDriver);
     }
     

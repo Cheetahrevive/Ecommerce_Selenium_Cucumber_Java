@@ -29,7 +29,7 @@ public class ConfigReader {
     }
 
     public static String getBaseUrl() {
-        return properties.getProperty("base.url");
+        return properties.getProperty("baseUrl");
     }
 
     public static int getImplicitWait() {

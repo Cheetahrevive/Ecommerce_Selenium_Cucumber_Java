@@ -1,81 +1,139 @@
 package stepDefinitions;
 
-import io.cucumber.java.en.*;
-import org.openqa.selenium.WebDriver;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.testng.Assert;
-import hooks.Hooks;
-import pages.HomePage;
+import pages.SauceLoginPage;
+import utils.ConfigReader;
 
+/**
+ * Step definitions for Login.feature, targeting the SauceDemo demo site
+ * (https://www.saucedemo.com). Step phrases match the feature file exactly.
+ */
 public class LoginSteps {
-    private WebDriver driver;
-    private HomePage homePage;
-    private String loginErrorMessage;
 
-    public LoginSteps() {
-        this.driver = Hooks.getDriver();
-        this.homePage = new HomePage(driver);
+    private static final String VALID_USER = "standard_user";
+    private static final String VALID_PASSWORD = "secret_sauce";
+    private static final String LOCKED_USER = "locked_out_user";
+
+    private SauceLoginPage loginPage;
+
+    /**
+     * Lazily create the page object so the WebDriver (started in Hooks @Before)
+     * is available before first use.
+     */
+    private SauceLoginPage page() {
+        if (loginPage == null) {
+            loginPage = new SauceLoginPage();
+        }
+        return loginPage;
     }
 
-    @Given("the user is on the login page")
-    public void theUserIsOnTheLoginPage() {
-        homePage.clickLoginButton();
+    @Given("I am on the e-commerce homepage")
+    public void iAmOnTheEcommerceHomepage() {
+        page().open(ConfigReader.getProperty("baseUrl"));
+        Assert.assertTrue(page().isLoginPageDisplayed(), "Login page was not displayed");
     }
 
-    @Given("the user is on the home page")
-    public void theUserIsOnTheHomePage() {
-        // Already navigated via Hooks
-        Assert.assertTrue(driver.getTitle().contains("Swag Labs"));
+    @When("I enter valid username and password")
+    public void iEnterValidUsernameAndPassword() {
+        page().enterUsername(VALID_USER);
+        page().enterPassword(VALID_PASSWORD);
     }
 
-    @When("the user enters valid username {string} and password {string}")
-    public void theUserEntersValidUsernameAndPassword(String username, String password) {
-        homePage.login(username, password);
+    @When("I click on the login button")
+    public void iClickOnTheLoginButton() {
+        page().clickLogin();
     }
 
-    @When("the user enters username {string} and password {string}")
-    public void theUserEntersUsernameAndPassword(String username, String password) {
-        homePage.login(username, password);
+    @Then("I should be successfully logged in")
+    public void iShouldBeSuccessfullyLoggedIn() {
+        Assert.assertTrue(page().isLoggedIn(), "User was not logged in");
     }
 
-    @When("the user enters locked username {string} and password {string}")
-    public void theUserEntersLockedUsernameAndPassword(String username, String password) {
-        homePage.login(username, password);
+    @Then("I should see the products page")
+    public void iShouldSeeTheProductsPage() {
+        Assert.assertTrue(page().isLoggedIn(), "Products page was not displayed");
     }
 
-    @When("the user leaves the username field empty and enters password {string}")
-    public void theUserLeavesUsernameEmptyAndEntersPassword(String password) {
-        homePage.login("", password);
+    @When("I enter invalid username {string} and valid password")
+    public void iEnterInvalidUsernameAndValidPassword(String username) {
+        page().enterUsername(username);
+        page().enterPassword(VALID_PASSWORD);
     }
 
-    @When("the user enters username {string} and leaves the password field empty")
-    public void theUserEntersUsernameAndLeavesPasswordEmpty(String username) {
-        homePage.login(username, "");
+    @Then("I should see an error message {string}")
+    public void iShouldSeeAnErrorMessage(String expectedMessage) {
+        Assert.assertTrue(page().isErrorDisplayed(), "Expected an error message but none was shown");
+        Assert.assertTrue(page().getErrorMessage().contains(expectedMessage),
+                "Error message mismatch. Actual: " + page().getErrorMessage());
     }
 
-    @When("the user leaves both username and password fields empty")
-    public void theUserLeavesBothFieldsEmpty() {
-        homePage.clickLoginButtonOnly();
+    @Then("I should remain on the login page")
+    public void iShouldRemainOnTheLoginPage() {
+        Assert.assertFalse(page().isLoggedIn(), "User was unexpectedly logged in");
+        Assert.assertTrue(page().isLoginPageDisplayed(), "Not on the login page");
     }
 
-    @Then("the user should be redirected to the products page")
-    public void theUserShouldBeRedirectedToProductsPage() {
-        Assert.assertTrue(driver.getCurrentUrl().contains("inventory.html"));
+    @When("I enter valid username and invalid password {string}")
+    public void iEnterValidUsernameAndInvalidPassword(String password) {
+        page().enterUsername(VALID_USER);
+        page().enterPassword(password);
     }
 
-    @Then("the user should see an error message {string}")
-    public void theUserShouldSeeErrorMessage(String expectedMessage) {
-        String actualMessage = homePage.getErrorMessage();
-        Assert.assertTrue(actualMessage.contains(expectedMessage));
+    @Then("I should see an error message")
+    public void iShouldSeeAnErrorMessage() {
+        Assert.assertTrue(page().isErrorDisplayed(), "Expected an error message but none was shown");
     }
 
-    @Then("the user should see the locked out error message")
-    public void theUserShouldSeeLockedOutErrorMessage() {
-        String errorMessage = homePage.getErrorMessage();
-        Assert.assertTrue(errorMessage.contains("locked out"));
+    @When("I leave username and password fields empty")
+    public void iLeaveUsernameAndPasswordFieldsEmpty() {
+        page().enterUsername("");
+        page().enterPassword("");
     }
 
-    @Then("the user should remain on the login page")
-    public void theUserShouldRemainOnLoginPage() {
-        Assert.assertTrue(driver.getCurrentUrl().contains("https://www.saucedemo.com/"));
+    @When("I enter locked user credentials")
+    public void iEnterLockedUserCredentials() {
+        page().enterUsername(LOCKED_USER);
+        page().enterPassword(VALID_PASSWORD);
+    }
+
+    @When("I enter username {string} and password {string}")
+    public void iEnterUsernameAndPassword(String username, String password) {
+        page().enterUsername(username);
+        page().enterPassword(password);
+    }
+
+    @When("I enter password in the password field")
+    public void iEnterPasswordInThePasswordField() {
+        page().enterPassword(VALID_PASSWORD);
+    }
+
+    @Then("the password should be displayed as masked characters")
+    public void thePasswordShouldBeDisplayedAsMaskedCharacters() {
+        Assert.assertEquals(page().getPasswordFieldType(), "password",
+                "Password field is not masked");
+    }
+
+    @When("I login with valid credentials")
+    public void iLoginWithValidCredentials() {
+        page().loginAs(VALID_USER, VALID_PASSWORD);
+        Assert.assertTrue(page().isLoggedIn(), "Login with valid credentials failed");
+    }
+
+    @When("I click on the menu button")
+    public void iClickOnTheMenuButton() {
+        page().openMenu();
+    }
+
+    @When("I click on logout")
+    public void iClickOnLogout() {
+        page().clickLogout();
+    }
+
+    @Then("I should be redirected to the login page")
+    public void iShouldBeRedirectedToTheLoginPage() {
+        Assert.assertTrue(page().isLoginPageDisplayed(), "Not redirected to the login page");
     }
 }
