@@ -54,7 +54,8 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: screenshots-${{ matrix.browser }}
-        path: test-output/screenshots/
+        # Hooks saves failure screenshots under target/screenshots/
+        path: target/screenshots/
     
     - name: Publish Test Report
       if: always()
